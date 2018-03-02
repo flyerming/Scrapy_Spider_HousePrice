@@ -35,7 +35,7 @@ class SoufangItem(scrapy.Item):
     chaoxiang = scrapy.Field()
     louceng = scrapy.Field()
     zhuangxiu = scrapy.Field()
-    jianzhuniajdai = scrapy.Field()
+    jianzhuniandai = scrapy.Field()
     dianti = scrapy.Field()
     huxingjiegou = scrapy.Field()
     chanquanxingzhi = scrapy.Field()
