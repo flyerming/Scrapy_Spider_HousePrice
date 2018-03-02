@@ -1,0 +1,15 @@
+命令行：
+--------------------------------------
+scrapy crawl soufangV2_spider
+
+if users want export data as csv format , input : 
+scrapy crawl soufangV2_spider -t csv -o **.csv --loglevel=INFO
+
+
+
+pycharm：
+-------------------------------------
+1.安装scrapy的package
+2.edit运行命令
+3.int文件修改
+4.根据错误提示，安装win32api
