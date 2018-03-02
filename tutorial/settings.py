@@ -44,7 +44,7 @@ ROBOTSTXT_OBEY = False
 DOWNLOADER_MIDDLEWARES = {
     # 'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
     # 'partent.middlewares.ProxyMiddleware': 100,
-'scrapy_crawlera.CrawleraMiddleware': 600
+    'scrapy_crawlera.CrawleraMiddleware': 600
 }
 
 CRAWLERA_ENABLED = True
