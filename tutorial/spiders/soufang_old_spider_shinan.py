@@ -16,6 +16,7 @@ from stem import Signal
 from stem.control import Controller
 from imp import reload
 
+from tutorial.changeip import IP_Handler
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
@@ -27,22 +28,6 @@ from random import randint, random
 class SfSpider(scrapy.spider.Spider):
     name = "soufang_old_spider_shinan"
     allowed_domains = ["fang.com"]
-
-#    # 自动切换IP部分
-    controller = Controller.from_port(port=9151)
-    controller.authenticate()
-    socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 9150)
-    socket.socket = socks.socksocket
-
-    # 初始IP选定
-    scrappy_time = 50
-    while scrappy_time > 20:
-        time1 = time.time()
-        IPADDR = requests.get("http://checkip.amazonaws.com", timeout=50).text
-        time2 = time.time()
-        scrappy_time = time2 - time1
-        controller.signal(Signal.NEWNYM)
-    print(IPADDR)
 
     #    第一层循环，循环每个区县。胶南和即墨先不考虑。网址为精选网址链接
     #    start_urls_list = ['http://esf.qd.fang.com/integrate-a0389/',#市南
@@ -84,14 +69,9 @@ class SfSpider(scrapy.spider.Spider):
 
             # 当网站验证码登录时，切换IP
             if houselists is None:
-                scrappy_time = 50
-                while scrappy_time > 20:
-                    SfSpider.controller.signal(Signal.NEWNYM)
-                    time1 = time.time()
-                    IPADDR = requests.get("http://checkip.amazonaws.com").text
-                    time2 = time.time()
-                    scrappy_time = time2 - time1
-                print(IPADDR)
+                #change ip
+                Status = IP_Handler.ChangeIP()
+                print(Status)
                 yield Request(response.url, callback=self.parse)
                 return
             # 第三层循环，提取每个小区的数据
@@ -136,7 +116,6 @@ class SfSpider(scrapy.spider.Spider):
     def parse_detail(self, response):
         loc_hxst = scrapy.Selector(response)
 
-        #        loc_hxs = loc_hxst.xpath("//div[@class='trl-item1 w130']//div[contains(text(),'户型')]")
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'户型')]")
         huxing = loc_hxs.xpath("./preceding-sibling::*/text()").extract()
         if (type(huxing) == list):
@@ -244,14 +223,9 @@ class SfSpider(scrapy.spider.Spider):
                 (chanquannianxian == '信息缺失') and \
                 (lvhualv == '信息缺失') and \
                 (rongjilv == '信息缺失'):
-            scrappy_time = 50
-            while scrappy_time > 20:
-                SfSpider.controller.signal(Signal.NEWNYM)
-                time1 = time.time()
-                IPADDR = requests.get("http://checkip.amazonaws.com").text
-                time2 = time.time()
-                scrappy_time = time2 - time1
-            print(IPADDR)
+            #change ip
+            Status = IP_Handler.ChangeIP()
+            print(Status)
             yield Request(response.url, callback=self.parse)
             return
 
