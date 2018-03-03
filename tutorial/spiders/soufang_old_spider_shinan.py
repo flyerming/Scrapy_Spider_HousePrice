@@ -32,8 +32,6 @@ class SfSpider(scrapy.spider.Spider):
     handle_httpstatus_list = [404, 403]
     start_urls.append(base_url + '/integrate-a0389/i31')
 
-    test = requests.get('http://esf.qd.fang.com/integrate-a0389/i31', timeout=50).text
-    print(test)
 
     def parse(self, response):
         reload(sys)
@@ -211,7 +209,7 @@ class SfSpider(scrapy.spider.Spider):
             #change ip
             Status = IP_Handler.ChangeIP()
             print(Status)
-            yield Request(response.url, callback=self.parse)
+            yield Request(response.url, callback=self.parse_detail)
             return
 
         item = response.meta['item']
@@ -247,3 +245,22 @@ class SfSpider(scrapy.spider.Spider):
         print('容积率: %s' % rongjilv)
 
         yield item
+
+    def closed(self, reason):  # 爬取结束的时候发送邮件
+        from scrapy.mail import MailSender
+
+        # mailer = MailSender.from_settings(settings)# 出错了，没找到原因
+        mailer = MailSender(
+            smtphost="smtp.sohu.com",  # 发送邮件的服务器
+            mailfrom="scrapy@sohu.com",  # 邮件发送者
+            smtpuser="scrapy@sohu.com",  # 用户名
+            smtppass="scrapy123",  # 发送邮箱的密码不是你注册时的密码，而是授权码！！！切记！
+            smtpport=25  # 端口号
+        )
+        body = u""" 
+        青岛市南完成，请核查是程序异常退出，若正常，则进行下一个。 
+        """
+        subject = u'青岛市南完成'
+        # 如果说发送的内容太过简单的话，很可能会被当做垃圾邮件给禁止发送。
+#        mailer.send(to=["flyerming@163.com", "mengwmk@163.com"], subject=subject.encode("utf-8"), body=body.encode("utf-8"))
+        mailer.send(to=["flyerming@163.com", "mengwmk@163.com"], subject=subject, body=body)

@@ -40,10 +40,9 @@ COOKIES_ENABLED = False
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-HTTP_PROXY = 'http://127.0.0.1:9150'
 
 DOWNLOADER_MIDDLEWARES = {
     'tutorial.middlewares.RandomUserAgentMiddleware': 400, # 修改这里的myspider为项目名称
-    'tutorial.middlewares.ProxyMiddleware': 410, # 同上
+#    'tutorial.middlewares.ProxyMiddleware': 410, # 同上
     'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
 }
