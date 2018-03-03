@@ -1,29 +1,14 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import re
-import sys
-import urllib
-import urllib.request
-import json
-import time
-import socket
-import socks
 import requests
 import time
 import sys
 
-from stem import Signal
-from stem.control import Controller
-from imp import reload
-
 from tutorial.changeip import IP_Handler
 from scrapy.spider import BaseSpider
-from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
 from tutorial.items import SoufangItem
 from imp import reload
-from random import randint, random
-
 
 class SfSpider(scrapy.spider.Spider):
     name = "soufang_old_spider_shinan"
