@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import requests
 import time
 import sys
+from tutorial.changeip import ChangeIP
 
-from tutorial.changeip import IP_Handler
 from scrapy.spider import BaseSpider
 from scrapy.http import Request
 from tutorial.items import SoufangItem
@@ -49,11 +48,10 @@ class SfSpider(scrapy.spider.Spider):
             hxs = scrapy.Selector(response)
             # 提取小区列表xpath格式数据。针对不同的网页，可能需要提取的class不同
             houselists = hxs.xpath("//dl[@class='list rel']")
-
             # 当网站验证码登录时，切换IP
-            if houselists is None:
+            if houselists.extract_first() is None:
                 #change ip
-                Status = IP_Handler.ChangeIP()
+                Status = ChangeIP()
                 print(Status)
                 yield Request(response.url, callback=self.parse)
                 return
@@ -100,95 +98,97 @@ class SfSpider(scrapy.spider.Spider):
         loc_hxst = scrapy.Selector(response)
 
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'户型')]")
-        huxing = loc_hxs.xpath("./preceding-sibling::*/text()").extract()
-        if (type(huxing) == list):
-            huxing = ''.join(huxing).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif huxing is None:
+        huxing = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first()
+        if huxing is None:
             huxing = '信息缺失'
+        else:
+            huxing = huxing.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'建筑面积')]")
-        jianzhumianji = loc_hxs.xpath("./preceding-sibling::*/text()").extract()
-        if (type(jianzhumianji) == list):
-            jianzhumianji = ''.join(jianzhumianji).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif jianzhumianji is None:
+        jianzhumianji = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first()
+        if jianzhumianji is None:
             jianzhumianji = '信息缺失'
+        else:
+            jianzhumianji = jianzhumianji.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'单价')]")
-        danjia = loc_hxs.xpath("./preceding-sibling::*/text()").extract()
-        if (type(danjia) == list):
-            danjia = ''.join(danjia).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif danjia is None:
+        danjia = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first()
+        if danjia is None:
             danjia = '信息缺失'
+        else:
+            danjia = danjia.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'朝向')]")
-        chaoxiang = loc_hxs.xpath("./preceding-sibling::*/text()").extract()
-        if (type(chaoxiang) == list):
-            chaoxiang = ''.join(chaoxiang).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif chaoxiang is None:
+        chaoxiang = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first()
+        if chaoxiang is None:
             chaoxiang = '信息缺失'
+        else:
+            chaoxiang = chaoxiang.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'楼层')]")
-        louceng = loc_hxs.xpath("./preceding-sibling::*/text()").extract()
-        if (type(louceng) == list):
-            louceng = ''.join(louceng).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif louceng is None:
+        louceng = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first()
+        if louceng is None:
             louceng = '信息缺失'
+        else:
+            louceng = louceng.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'装修')]")
-        zhuangxiu = loc_hxs.xpath("./preceding-sibling::*/text()").extract()
-        if (type(zhuangxiu) == list):
-            zhuangxiu = ''.join(zhuangxiu).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif zhuangxiu is None:
+        zhuangxiu = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first()
+        if zhuangxiu is None:
             zhuangxiu = '信息缺失'
+        else:
+            zhuangxiu = zhuangxiu.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'物业类型')]")
-        jianzhuniandai = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(jianzhuniandai) == list):
-            jianzhuniandai = ''.join(jianzhuniandai).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif jianzhuniandai is None:
+        jianzhuniandai = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if jianzhuniandai is None:
             jianzhuniandai = '信息缺失'
+        else:
+            jianzhuniandai = jianzhuniandai.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'有无电梯')]")
-        dianti = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(dianti) == list):
-            dianti = ''.join(dianti).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif dianti is None:
+        dianti = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if dianti is None:
             dianti = '信息缺失'
+        else:
+            dianti = dianti.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'户型结构')]")
-        huxingjiegou = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(huxingjiegou) == list):
-            huxingjiegou = ''.join(huxingjiegou).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif huxingjiegou is None:
+        huxingjiegou = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if huxingjiegou is None:
             huxingjiegou = '信息缺失'
+        else:
+            huxingjiegou = huxingjiegou.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'产权性质')]")
-        chanquanxingzhi = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(chanquanxingzhi) == list):
-            chanquanxingzhi = ''.join(chanquanxingzhi).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif chanquanxingzhi is None:
+        chanquanxingzhi = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if chanquanxingzhi is None:
             chanquanxingzhi = '信息缺失'
+        else:
+            chanquanxingzhi = chanquanxingzhi.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'物业类型')]")
-        wuyeleixing = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(wuyeleixing) == list):
-            wuyeleixing = ''.join(wuyeleixing).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif wuyeleixing is None:
+        wuyeleixing = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if wuyeleixing is None:
             wuyeleixing = '信息缺失'
+        else:
+            wuyeleixing = wuyeleixing.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'物业费用')]")
-        wuyefeiyong = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(wuyefeiyong) == list):
-            wuyefeiyong = ''.join(wuyefeiyong).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif wuyefeiyong is None:
+        wuyefeiyong = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if wuyefeiyong is None:
             wuyefeiyong = '信息缺失'
+        else:
+            wuyefeiyong = wuyefeiyong.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'产权年限')]")
-        chanquannianxian = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(chanquannianxian) == list):
-            chanquannianxian = ''.join(chanquannianxian).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif chanquannianxian is None:
+        chanquannianxian = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if chanquannianxian is None:
             chanquannianxian = '信息缺失'
+        else:
+            chanquannianxian = chanquannianxian.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'绿  化  率')]")
-        lvhualv = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(lvhualv) == list):
-            lvhualv = ''.join(lvhualv).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif lvhualv is None:
+        lvhualv = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if lvhualv is None:
             lvhualv = '信息缺失'
+        else:
+            lvhualv = lvhualv.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'容  积  率')]")
-        rongjilv = loc_hxs.xpath("./following-sibling::*/text()").extract()
-        if (type(rongjilv) == list):
-            rongjilv = ''.join(rongjilv).replace('\r', '').replace('\n', '').replace('\t', '')
-        elif rongjilv is None:
+        rongjilv = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
+        if rongjilv is None:
             rongjilv = '信息缺失'
+        else:
+            rongjilv = rongjilv.replace('\r', '').replace('\n', '').replace('\t', '')
+
+        item = response.meta['item']
 
         # 检验是否网页读取异常更换IP
         if (jianzhumianji == '信息缺失') and \
@@ -207,12 +207,12 @@ class SfSpider(scrapy.spider.Spider):
                 (lvhualv == '信息缺失') and \
                 (rongjilv == '信息缺失'):
             #change ip
-            Status = IP_Handler.ChangeIP()
+
+            Status = ChangeIP()
             print(Status)
-            yield Request(response.url, callback=self.parse_detail)
+            yield Request(response.url, callback=self.parse_detail, meta={'item': item})
             return
 
-        item = response.meta['item']
         item['jianzhumianji'] = jianzhumianji.encode('utf-8')
         item['huxing'] = huxing.encode('utf-8')
         item['chaoxiang'] = chaoxiang.encode('utf-8')
