@@ -122,7 +122,7 @@ class SfSpider(scrapy.spider.Spider):
         else:
             chaoxiang = chaoxiang.replace('\r', '').replace('\n', '').replace('\t', '')
         loc_hxs = loc_hxst.xpath("//div[@class='font14' and contains(text(),'楼层')]")
-        louceng = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first()
+        louceng = loc_hxs.xpath("./preceding-sibling::*/text()").extract_first() + loc_hxst.xpath("//div[@class='font14' and contains(text(),'楼层')]/text()").extract_first()
         if louceng is None:
             louceng = '信息缺失'
         else:
@@ -133,7 +133,7 @@ class SfSpider(scrapy.spider.Spider):
             zhuangxiu = '信息缺失'
         else:
             zhuangxiu = zhuangxiu.replace('\r', '').replace('\n', '').replace('\t', '')
-        loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'物业类型')]")
+        loc_hxs = loc_hxst.xpath("//span[@class='lab' and contains(text(),'建筑年代')]")
         jianzhuniandai = loc_hxs.xpath("./following-sibling::*/text()").extract_first()
         if jianzhuniandai is None:
             jianzhuniandai = '信息缺失'
@@ -215,6 +215,8 @@ class SfSpider(scrapy.spider.Spider):
 
         item['jianzhumianji'] = jianzhumianji.encode('utf-8')
         item['huxing'] = huxing.encode('utf-8')
+        item['chengshi'] = "青岛".encode('utf-8')
+        item['quxian'] = "市南".encode('utf-8')
         item['chaoxiang'] = chaoxiang.encode('utf-8')
         item['danjia'] = danjia.encode('utf-8')
         item['louceng'] = louceng.encode('utf-8')
@@ -258,7 +260,7 @@ class SfSpider(scrapy.spider.Spider):
             smtpport=25  # 端口号
         )
         body = u""" 
-        青岛市北完成，请核查是程序异常退出，若正常，则进行下一个。 
+        青岛市北完成，请核查是程序是否异常退出，以及程序爬取数目是否正确，若正常，则进行下一个。 
         """
         subject = u'青岛市北完成'
         # 如果说发送的内容太过简单的话，很可能会被当做垃圾邮件给禁止发送。

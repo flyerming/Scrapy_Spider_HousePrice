@@ -27,7 +27,6 @@ class SoufangItem(scrapy.Item):
     address = scrapy.Field()
     link = scrapy.Field()
     danjia = scrapy.Field()
-    house_type = scrapy.Field()
     jianzhumianji = scrapy.Field()
     huxing = scrapy.Field()
     chaoxiang = scrapy.Field()
